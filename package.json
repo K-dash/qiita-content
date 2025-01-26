@@ -15,6 +15,6 @@
     "npm": "10.7.0"
   },
   "devDependencies": {
-    "@qiita/qiita-cli": "^1.4.3"
+    "@qiita/qiita-cli": "^1.6.1"
   }
 }
