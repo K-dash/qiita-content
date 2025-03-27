@@ -7,7 +7,7 @@ tags:
   - GitHubActions
   - rust-cache
 private: false
-updated_at: '2025-01-26T10:08:24+09:00'
+updated_at: '2025-02-06T19:22:19+09:00'
 id: cab8aa34c51726ac8bdb
 organization_url_name: null
 slide: false
@@ -48,7 +48,8 @@ test-rust-cache-mono
 
 # 先に結論
 
-以下の 🟢 OK の YAML のように、`Swatinem/rust-cache` の `workspaces` オプションで Rust プロジェクトのディレクトリを指定する必要がありました。
+キャッシュを効かせるためには、以下の 🟢 OK の YAML のように **`Swatinem/rust-cache` の `workspaces` オプションで Rust プロジェクトのディレクトリを指定する必要がありました。**
+こうすることで、`Swatinem/rust-cache` のキャッシュが保持されるようになりました。
 
 意外だったのは、以下のように `working-directory` を定義していてもダメだったことです。
 
@@ -56,7 +57,7 @@ test-rust-cache-mono
 defaults:
   run:
     shell: bash
-    working-directory: backend # <- これがrust-cacheアクションで効かない
+    working-directory: backend # <- 🙅‍♂️これがrust-cacheアクションで効かない
 
 jobs:
   check:
@@ -84,7 +85,7 @@ jobs:
 
       - name: Cache dependencies
         uses: Swatinem/rust-cache@v2
-        # これが必要
+        # 🙆‍♂️ 以下が必要
         with:
           workspaces: |
             backend -> target
@@ -107,7 +108,7 @@ jobs:
 
 # `working-directory` を指定しているのになぜエラーになる？
 
-🔴NG の YAML では、`defaults` 内で `working-directory: backend` と指定しているので、それ以外の処理はすべて backend 配下で正しく動いていました。
+🔴NG の YAML では、`defaults` 内で `working-directory: backend` と指定しているので、それ以外の処理はすべて backend（Rustプロジェクトのディレクトリ） 配下で正しく動いていました。
 にもかかわらず、rust-cache のほうでは `Cargo.toml` が見つからないというメッセージが出ており、最初は「？？」となりました。
 
 ログの内容をちゃんと見ると、
